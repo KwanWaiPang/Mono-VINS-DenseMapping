@@ -25,7 +25,7 @@
   roslaunch open_quadtree_mapping example.launch
 ~~~
 
-# 测试demo
+# 测试demo（可实现单目实时的稠密重建）
 * [Mono-VINS-DenseMapping (单目稠密重建) 分辨率752*480](https://www.bilibili.com/video/BV1Yp421X7xt/?spm_id_from=333.788&vd_source=a88e426798937812a8ffc1a9be5a3cb7)
 * [Mono-VINS-DenseMapping (单目VIO+单目稠密重建) 分辨率640*480](https://www.bilibili.com/video/BV15H4y1N7un/?vd_source=a88e426798937812a8ffc1a9be5a3cb7)
 * [Mono-VINS-DenseMapping (单目VIO+单目稠密重建) 分辨率346*260](https://www.bilibili.com/video/BV1Ji42127Vi/?vd_source=a88e426798937812a8ffc1a9be5a3cb7)
