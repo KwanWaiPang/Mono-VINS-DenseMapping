@@ -13,7 +13,9 @@
   <div align="center"></div>
 
 <br>
+
 ### Developer: [Guan Weipeng](https://kwanwaipang.github.io/), [Chen Peiyu](https://github.com/cpymaple)
+
 <br>
 
   * 为了方便本人使用，对代码做了修改(适配ubuntu20.04)，源码请参见原github仓库~
