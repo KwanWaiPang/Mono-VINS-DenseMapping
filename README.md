@@ -12,6 +12,8 @@
   </h3>
   <div align="center"></div>
 
+### Developer: [Guan Weipeng](https://kwanwaipang.github.io/), [Chen Peiyu](https://github.com/cpymaple)
+
   * 为了方便本人使用，对代码做了修改(适配ubuntu20.04)，源码请参见原github仓库~
   * 创建工作空间，然后catkin_make即可（运行前记得source一下）
 
