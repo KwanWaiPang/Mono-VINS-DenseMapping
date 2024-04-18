@@ -1,0 +1,63 @@
+<launch>
+
+  <arg name="config_path" default = "$(find feature_tracker)/../config/realsense/d455.yaml" />
+  <arg name="vins_path" default = "$(find feature_tracker)/../config/../" />
+  
+  <node name="feature_tracker" pkg="feature_tracker" type="feature_tracker" output="log">
+      <param name="config_file" type="string" value="$(arg config_path)" />
+      <param name="vins_folder" type="string" value="$(arg vins_path)" />
+  </node>
+
+  <node name="vins_estimator" pkg="vins_estimator" type="vins_estimator" output="screen">
+      <param name="config_file" type="string" value="$(arg config_path)" />
+      <param name="vins_folder" type="string" value="$(arg vins_path)" />
+  </node>
+
+
+  <node pkg="open_quadtree_mapping" type="open_quadtree_mapping_node" name="open_quadtree_mapping" clear_params="true" output="screen">
+
+    <param name="cam_width" value="640" />
+    <param name="cam_height" value="480" />
+    <param name="cam_fx" value="393.69464111328125" />
+    <param name="cam_cx" value="319.91021728515625" />
+    <param name="cam_fy" value="393.69464111328125" />
+    <param name="cam_cy" value="241.13204956054688" />
+    <param name="cam_k1" value="0.0"/>
+    <param name="cam_k2" value="0.0"/>
+    <param name="cam_r1" value="0.0"/>
+    <param name="cam_r2" value="0.0"/>
+
+    <!-- <param name="cam_width" value="752" />
+    <param name="cam_height" value="480" />
+    <param name="cam_fx" value="3.6537093297021136e+02" />
+    <param name="cam_cx" value="3.6964744957606678e+02" />
+    <param name="cam_fy" value="3.6507591213493185e+02" />
+    <param name="cam_cy" value="2.4095181606217392e+02" />
+    <param name="cam_k1" value="-2.6308981682861932e-01"/>
+    <param name="cam_k2" value="5.6218950573062511e-02"/>
+    <param name="cam_r1" value="-1.4306684839826532e-03"/>
+    <param name="cam_r2" value="-2.4563568486974763e-04"/> -->
+
+    <!--downsample factor: 0 ~ 1-->
+    <param name="downsample_factor" value="0.54"/>
+    <param name="semi2dense_ratio" value="1"/>
+
+    <!-- if using synchronize image and pose-->
+    <remap from="~image" to="/camera/infra1/image_rect_raw" />
+    <!-- <remap from="~posestamped" to="/stereo_esvio_estimator/imu_evio" /> -->
+    <!-- <remap from="~image" to="/mv_25001498/image_raw" /> -->
+    <remap from="~posestamped" to="/vins_estimator/camera_pose" />
+
+  </node>   
+
+  	<!-- 运行rosbag -->
+	<arg name="bag_name" value="/home/kwanwaipang/dataset/EVI-SAM/113005.bag"/>
+	  <node pkg="rosbag" type="play" name="rosbag" args="-r 1.0 -s 0.5 --clock --pause $(arg bag_name)" launch-prefix="gnome-terminal -x"/>
+
+  <!-- 是否开启rviz -->
+	<arg name="rviz" default="true" />
+  <group if="$(arg rviz)">
+		<node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find open_quadtree_mapping)/open_quadtree_mapping.rviz" />
+	</group>
+
+</launch>
