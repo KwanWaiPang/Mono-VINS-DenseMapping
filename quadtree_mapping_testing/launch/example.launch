@@ -65,7 +65,7 @@
 
   	<!-- 运行rosbag -->
 	<arg name="bag_name" value="/home/kwanwaipang/dataset/EVI-SAM/113005.bag"/>
-	  <node pkg="rosbag" type="play" name="rosbag" args="-r 1.0 -s 0.5 --clock --pause $(arg bag_name)" launch-prefix="gnome-terminal -x"/>
+	  <node pkg="rosbag" type="play" name="rosbag" args="-r 0.5 -s 0.5 --clock --pause $(arg bag_name)" launch-prefix="gnome-terminal -x"/>
 
   <!-- 是否开启rviz -->
 	<arg name="rviz" default="true" />
