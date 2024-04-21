@@ -1,0 +1,117 @@
+<launch>
+
+  <!-- <arg name="config_path" default = "$(find feature_tracker)/../config/realsense/d455.yaml" /> -->
+  <arg name="config_path" default = "$(find feature_tracker)/../config/hku/davis346.yaml" />
+  <arg name="vins_path" default = "$(find feature_tracker)/../config/../" />
+  
+  <node name="feature_tracker" pkg="feature_tracker" type="feature_tracker" output="log">
+      <param name="config_file" type="string" value="$(arg config_path)" />
+      <param name="vins_folder" type="string" value="$(arg vins_path)" />
+  </node>
+
+  <node name="vins_estimator" pkg="vins_estimator" type="vins_estimator" output="log">
+      <param name="config_file" type="string" value="$(arg config_path)" />
+      <param name="vins_folder" type="string" value="$(arg vins_path)" />
+  </node>
+
+
+  <node pkg="open_quadtree_mapping" type="open_quadtree_mapping_node" name="open_quadtree_mapping" clear_params="true" output="log">
+
+    <!-- <param name="cam_width" value="640" />
+    <param name="cam_height" value="480" />
+    <param name="cam_fx" value="393.69464111328125" />
+    <param name="cam_cx" value="319.91021728515625" />
+    <param name="cam_fy" value="393.69464111328125" />
+    <param name="cam_cy" value="241.13204956054688" />
+    <param name="cam_k1" value="0.0"/>
+    <param name="cam_k2" value="0.0"/>
+    <param name="cam_r1" value="0.0"/>
+    <param name="cam_r2" value="0.0"/> -->
+
+    <param name="cam_width" value="346" />
+    <param name="cam_height" value="260" />
+    <param name="cam_fx" value="243.48247333418462" />
+    <param name="cam_cx" value="177.22191130442948" />
+    <param name="cam_fy" value="242.83437823452573" />
+    <param name="cam_cy" value="117.92833352552883" />
+    <param name="cam_k1" value="-0.38932940078766665"/>
+    <param name="cam_k2" value="0.15946398959767422"/>
+    <param name="cam_r1" value="0.0014881647414925019"/>
+    <param name="cam_r2" value="-0.001559345555442927"/>
+
+    <!--downsample factor: 0 ~ 1-->
+    <param name="downsample_factor" value="1"/>
+    <param name="semi2dense_ratio" value="1"/>
+
+    <!-- if using synchronize image and pose-->
+    <!-- <remap from="~image" to="/camera/infra1/image_rect_raw" /> -->
+    <remap from="~image" to="/DAVIS346/image" />
+    <remap from="~posestamped" to="/vins_estimator/camera_pose" />
+
+  </node>   
+
+
+     <!-- 开启TSDF-based map fusion -->
+    <arg name="voxel_size" default="0.01"/>
+    <node name="voxblox_node" pkg="voxblox_ros" type="tsdf_server" output="screen" args="--alsologtostderr" clear_params="true" launch-prefix="gnome-terminal -x">
+
+        <!-- Topics -->
+        <remap from="pointcloud" to="open_quadtree_mapping/pointcloud"/>  
+        
+        <param name="tsdf_voxel_size" value="$(arg voxel_size)" />   <!-- The size of the tsdf voxels -->
+        <param name="tsdf_voxels_per_side" value="16" />    <!-- TSDF voxels per side of an allocated block. Must be a power of 2 -->
+        <param name="voxel_carving_enabled" value="false" />        <!-- If true, the entire length of a ray is integrated, if false only the region inside the trunaction distance is used. -->
+
+        <!-- If true the ros tf tree will be used to get the pose of the sensor relative to the world (sensor_frame and world_frame will be used). If false the pose must be given via the transform topic. -->
+        <param name="use_tf_transforms" value="true" />
+        <param name="world_frame" value="world" />
+        <param name="sensor_frame" value="" />   <!-- The sensor frame used when looking up tf transforms. If set to “” the frame of the input pointcloud message will be used. -->
+
+        <param name="verbose" value="true" /> <!-- 打印各种log信息 Prints additional debug and timing information. -->
+
+        <param name="update_mesh_every_n_sec" value="1.0" />   <!-- 原本为1.0 ,控制mesh的更新频率，可以试试0.2-->
+
+        <!-- 最大与最小距离.注意全局地图可能会收到这个的影响 -->
+        <!-- <param name="min_ray_length_m" value="1.0" /> -->
+        <param name="max_ray_length_m" value="10.0" />
+        <!-- <param name="allow_clear" value="true" />  -->
+         <!-- If true points beyond the max_ray_length_m will be integrated up to this distance-->
+
+        <param name="min_time_between_msgs_sec" value="-1.0" />  <!-- Minimum time to wait after integrating a message before accepting a new one. -->
+
+        <!-- TSDF Integrator Parameters -->
+        <param name="method" value="fast" /> 
+        <!-- “simple”, “merged”, “fast”-->
+
+        <param name="use_const_weight" value="true" /> <!-- If true all points along a ray have equal weighting-->
+
+        <!-- The method that will be used for coloring the mesh. Options are “color”, “height”, “normals”, “lambert” and “gray”. -->
+        <param name="color_mode" value="color" />
+        
+
+        <!-- 一系列发布选项 -->
+        <param name="publish_pointclouds_on_update" value="true" />
+        <param name="publish_slices" value="true" />
+        <param name="publish_pointclouds" value="true" />
+        <!-- 下面可选参数rainbow, inverse_rainbow, grayscale, inverse_grayscale, ironbow -->
+        <param name="intensity_colormap" value="rainbow" />
+        <param name="publish_tsdf_map" value="true" />
+       
+    </node>
+
+
+
+  <!-- 运行rosbag -->
+	<arg name="bag_name" value="/home/kwanwaipang/dataset/EVI-SAM/113005.bag"/>
+	  <node pkg="rosbag" type="play" name="rosbag" args="-r 0.5 -s 0.5 --clock --pause $(arg bag_name)" launch-prefix="gnome-terminal -x"/>
+
+  <!-- 是否开启rviz -->
+	<arg name="rviz" default="true" />
+  <group if="$(arg rviz)">
+		<node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find open_quadtree_mapping)/open_quadtree_mapping.rviz" />
+	</group>
+
+  <!-- *********************************   rviz可视化全局地图   *********************************     -->
+  <node name="rviz_mapfusioin" pkg="rviz" type="rviz" output="log" args="-d $(find open_quadtree_mapping)/TSDF.rviz" />
+
+</launch>
