@@ -32,7 +32,6 @@
 
 
 # 添加了TSDF-based Map Fusion
-* 效果很差，远不如EVI-SAM的效果～
 
 ~~~
   roslaunch open_quadtree_mapping example_hku_globalmapping.launch
