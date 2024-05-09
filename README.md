@@ -8,7 +8,7 @@
   <h3 align="center">
   <a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono">Original Github of VINS-MONO</a>
   | <a href="https://github.com/HKUST-Aerial-Robotics/open_quadtree_mapping">Original Github of open_quadtree_mapping</a>
-  | <a href="https://github.com/arclab-hku/Event_based_VO-VIO-SLAM?tab=readme-ov-file#5-evi-sam">Testing Dataset</a>
+  | <a href="https://github.com/arclab-hku/Event_based_VO-VIO-SLAM/blob/main/EVI-SAM/data_srcipt.md">Testing Dataset</a>
   </h3>
   <div align="center"></div>
 
