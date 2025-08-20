@@ -57,17 +57,17 @@ max_num_iterations: 8   # max solver itrations, to guarantee real time
 keyframe_parallax: 10.0 # keyframe selection threshold (pixel)
 
 #imu parameters       The more accurate parameters you provide, the better performance
-acc_n: 0.1          # accelerometer measurement noise standard deviation. #0.2
-gyr_n: 0.01         # gyroscope measurement noise standard deviation.     #0.05
-acc_w: 0.0002         # accelerometer bias random work noise standard deviation.  #0.02
-gyr_w: 2.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5
+acc_n: 0.2 #0.1          # accelerometer measurement noise standard deviation. #0.2
+gyr_n: 0.05 #0.01         # gyroscope measurement noise standard deviation.     #0.05
+acc_w: 0.002 #0.0002         # accelerometer bias random work noise standard deviation.  #0.02
+gyr_w: 4.0e-5 #2.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5
 g_norm: 9.805       # gravity magnitude
 
 #loop closure parameters
 loop_closure: 1                    # start loop closure
 fast_relocalization: 1             # useful in real-time and large project
 load_previous_pose_graph: 0        # load and reuse previous pose graph; load from 'pose_graph_save_path'
-pose_graph_save_path: "/home/tony-ws1/output/pose_graph/" # save and load path
+# pose_graph_save_path: "/home/tony-ws1/output/pose_graph/" # save and load path
 
 #unsynchronization parameters
 estimate_td: 1                      # online estimate time offset between camera and imu
@@ -75,9 +75,9 @@ td: 0.000                           # initial value of time offset. unit: s. rea
 
 #rolling shutter parameters
 rolling_shutter: 1                      # 0: global shutter camera, 1: rolling shutter camera
-rolling_shutter_tr: 0.033               # unit: s. rolling shutter read out time per frame (from data sheet). 
+rolling_shutter_tr: 0 #0.033               # unit: s. rolling shutter read out time per frame (from data sheet). 
 
 #visualization parameters
 save_image: 1                   # save image in pose graph for visualization prupose; you can close this function by setting 0 
-visualize_imu_forward: 0        # output imu forward propogation to achieve low latency and high frequence results
-visualize_camera_size: 0.4      # size of camera marker in RVIZ
+visualize_imu_forward: 1 #0        # output imu forward propogation to achieve low latency and high frequence results
+visualize_camera_size: 0.1 #0.4      # size of camera marker in RVIZ
