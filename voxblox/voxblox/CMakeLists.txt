@@ -7,6 +7,11 @@ catkin_simple(ALL_DEPS_REQUIRED)
 set(CMAKE_MACOSX_RPATH 0)
 add_definitions(-std=c++11 -Wall -Wextra)
 
+find_package(Eigen3)
+include_directories(
+  ${EIGEN3_INCLUDE_DIR}
+)
+
 ############
 # PROTOBUF #
 ############
