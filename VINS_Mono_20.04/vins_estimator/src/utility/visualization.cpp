@@ -97,8 +97,10 @@ void printStatistics(const Estimator &estimator, double t)
         //ROS_DEBUG("calibration result for camera %d", i);
         // ROS_DEBUG_STREAM("extirnsic tic: " << estimator.tic[i].transpose());
         // ROS_DEBUG_STREAM("extrinsic ric: " << Utility::R2ypr(estimator.ric[i]).transpose());
-        ROS_INFO_STREAM("extirnsic tic: " << estimator.tic[i].transpose());
-        ROS_INFO_STREAM("extrinsic ric: " << Utility::R2ypr(estimator.ric[i]).transpose());
+        // ROS_INFO_STREAM("===================================");
+        // ROS_INFO_STREAM("Extrinsic_R " <<std::endl<< estimator.ric[i]);
+        // ROS_INFO_STREAM("Extrinsic_T: "<<std::endl << estimator.tic[i].transpose());
+        
         if (ESTIMATE_EXTRINSIC)
         {
             cv::FileStorage fs(EX_CALIB_RESULT_PATH, cv::FileStorage::WRITE);

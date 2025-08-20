@@ -31,21 +31,24 @@ extrinsicRotation: !!opencv-matrix
    rows: 3
    cols: 3
    dt: d
-   data: [ 1.0,  0.0,  0.0,
-           0.0,  1.0,  0.0, 
-           0.0,  0.0,  1.0]
+   # data: [ 1.0,  0.0,  0.0,
+   #         0.0,  1.0,  0.0, 
+   #         0.0,  0.0,  1.0]
+   data: [  0.999927, -0.00579962,   0.0105571,
+            0.00598616,    0.999825,  -0.0177244,
+            -0.0104525,   0.0177863,    0.999787]
 
 #Translation from camera frame to imu frame, imu^T_cam
 extrinsicTranslation: !!opencv-matrix
    rows: 3
    cols: 1
    dt: d
-   data: [-0.03022, 0.0074, 0.0] #[0.246, 0.065, -16.948]
+   data: [-0.00559245,   0.0370655,   0.0660908] #[0.246, 0.065, -16.948]
 
 #feature traker paprameters
 max_cnt: 200 #150            # max feature number in feature tracking
 min_dist: 25            # min distance between two features 
-freq: 10                # frequence (Hz) of publish tracking result. At least 10Hz for good estimation. If set 0, the frequence will be same as raw image 
+freq: 20 #10                # frequence (Hz) of publish tracking result. At least 10Hz for good estimation. If set 0, the frequence will be same as raw image 
 F_threshold: 1.0        # ransac threshold (pixel)
 show_track: 1           # publish tracking image as topic
 equalize: 0             # if image is too dark or light, trun on equalize to find enough features
@@ -57,10 +60,10 @@ max_num_iterations: 8   # max solver itrations, to guarantee real time
 keyframe_parallax: 10.0 # keyframe selection threshold (pixel)
 
 #imu parameters       The more accurate parameters you provide, the better performance
-acc_n: 0.2 #0.1          # accelerometer measurement noise standard deviation. #0.2
-gyr_n: 0.05 #0.01         # gyroscope measurement noise standard deviation.     #0.05
+acc_n: 0.08 #0.1          # accelerometer measurement noise standard deviation. #0.2
+gyr_n: 0.004 #0.01         # gyroscope measurement noise standard deviation.     #0.05
 acc_w: 0.002 #0.0002         # accelerometer bias random work noise standard deviation.  #0.02
-gyr_w: 4.0e-5 #2.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5
+gyr_w: 2.0e-6 #2.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5
 g_norm: 9.805       # gravity magnitude
 
 #loop closure parameters
@@ -79,5 +82,5 @@ rolling_shutter_tr: 0 #0.033               # unit: s. rolling shutter read out t
 
 #visualization parameters
 save_image: 1                   # save image in pose graph for visualization prupose; you can close this function by setting 0 
-visualize_imu_forward: 1 #0        # output imu forward propogation to achieve low latency and high frequence results
-visualize_camera_size: 0.1 #0.4      # size of camera marker in RVIZ
+visualize_imu_forward: 0        # output imu forward propogation to achieve low latency and high frequence results
+visualize_camera_size: 0.4      # size of camera marker in RVIZ
