@@ -1,0 +1,63 @@
+<launch>
+
+  <!-- 开启深度图与彩色图融合 -->
+  <node name="DepthtoPointcloud_node" pkg="dvs_reconstruction" type="DepthtoPointcloud_node" output="screen" launch-prefix="gnome-terminal -x" >
+    <remap from="image_rgb" to="/camera/color/image_raw"/>
+    <remap from="image_depth" to="/camera/depth/image_raw"/>
+    <remap from="camera_info" to="/camera/depth/camera_info"/>
+    <remap from="PointCloud_from_DepthImage" to="/PointCloud_from_DepthImage"/>
+  </node>
+
+    <!-- 开启TSDF-based map fusion -->
+  <arg name="voxel_size" default="0.01"/>
+  <node name="voxblox_node" pkg="voxblox_ros" type="tsdf_server" output="screen" args="--alsologtostderr" clear_params="true" launch-prefix="gnome-terminal -x">
+
+      <!-- Topics -->
+      <remap from="pointcloud" to="open_quadtree_mapping/pointcloud"/>  
+      
+      <param name="tsdf_voxel_size" value="$(arg voxel_size)" />   <!-- The size of the tsdf voxels -->
+      <param name="tsdf_voxels_per_side" value="16" />    <!-- TSDF voxels per side of an allocated block. Must be a power of 2 -->
+      <param name="voxel_carving_enabled" value="false" />        <!-- If true, the entire length of a ray is integrated, if false only the region inside the trunaction distance is used. -->
+
+      <!-- If true the ros tf tree will be used to get the pose of the sensor relative to the world (sensor_frame and world_frame will be used). If false the pose must be given via the transform topic.设置了默认会采用tf来作为pose -->
+      <param name="use_tf_transforms" value="true" />
+      <param name="world_frame" value="world" />
+      <param name="sensor_frame" value="" />   <!-- The sensor frame used when looking up tf transforms. If set to “” the frame of the input pointcloud message will be used. -->
+
+      <param name="verbose" value="true" /> <!-- 打印各种log信息 Prints additional debug and timing information. -->
+
+      <param name="update_mesh_every_n_sec" value="1.0" />   <!-- 原本为1.0 ,控制mesh的更新频率，可以试试0.2-->
+
+      <!-- 最大与最小距离.注意全局地图可能会收到这个的影响 -->
+      <!-- <param name="min_ray_length_m" value="1.0" /> -->
+      <param name="max_ray_length_m" value="10.0" />
+      <!-- <param name="allow_clear" value="true" />  -->
+        <!-- If true points beyond the max_ray_length_m will be integrated up to this distance-->
+
+      <param name="min_time_between_msgs_sec" value="-1.0" />  <!-- Minimum time to wait after integrating a message before accepting a new one. -->
+
+      <!-- TSDF Integrator Parameters -->
+      <param name="method" value="fast" /> 
+      <!-- “simple”, “merged”, “fast”-->
+
+      <param name="use_const_weight" value="true" /> <!-- If true all points along a ray have equal weighting-->
+
+      <!-- The method that will be used for coloring the mesh. Options are “color”, “height”, “normals”, “lambert” and “gray”. -->
+      <param name="color_mode" value="color" />
+      
+
+      <!-- 一系列发布选项 -->
+      <param name="publish_pointclouds_on_update" value="true" />
+      <param name="publish_slices" value="true" />
+      <param name="publish_pointclouds" value="true" />
+      <!-- 下面可选参数rainbow, inverse_rainbow, grayscale, inverse_grayscale, ironbow -->
+      <param name="intensity_colormap" value="rainbow" />
+      <param name="publish_tsdf_map" value="true" />
+      
+  </node>
+
+
+  <!-- *********************************   rviz可视化全局地图   *********************************     -->
+  <node name="rviz_mapfusioin" pkg="rviz" type="rviz" output="log" args="-d $(find open_quadtree_mapping)/TSDF.rviz" />
+
+</launch>

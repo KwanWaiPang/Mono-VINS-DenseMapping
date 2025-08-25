@@ -1,0 +1,36 @@
+<launch>
+
+<!-- 发布/camera_info -->
+  <node name="cam_info_pub" pkg="rostopic" type="rostopic"
+  args="pub /depth/camera_info sensor_msgs/CameraInfo
+  '{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+  height: 720, width: 1280, distortion_model: 'plumb_bob',
+  D: [0.005676075, -0.049806084, -0.000199534, -0.000452205],
+  K: [694.457214, 0, 639.381226,
+      0, 694.411804, 363.544281,
+      0, 0, 1],
+  R: [1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0],
+  P: [694.457214, 0, 639.381226,  0,
+      0, 694.411804, 363.544281, 0,
+      0, 0, 1, 0],
+  binning_x: 0, binning_y: 0,
+  roi: {x_offset: 0, y_offset: 0, height: 0, width: 0, do_rectify: false} }' -r 1000"  respawn="true" />
+
+
+<param name="colorful" type="bool" value="true"/>
+<param name="PointCloud_frameid" type="string" value="world" />
+
+  <!-- 开启深度图与彩色图融合 -->
+  <node name="DepthtoPointcloud_node" pkg="DepthtoPointcloud_node" type="DepthtoPointcloud_node" output="screen" launch-prefix="gnome-terminal -x" >
+    <remap from="image_rgb" to="/camera/color/image_raw"/>
+    <remap from="image_depth" to="/camera/depth/image_raw"/>
+    <remap from="camera_info" to="/depth/camera_info"/>
+    <remap from="PointCloud_from_DepthImage" to="/PointCloud_from_DepthImage"/>
+  </node>
+
+  <!-- *********************************   rviz可视化   *********************************     -->
+  <node name="rviz_depth_to_pointcloud" pkg="rviz" type="rviz" output="log" args="-d $(find DepthtoPointcloud_node)/depth_to_pointcloud.rviz" />
+
+</launch>
