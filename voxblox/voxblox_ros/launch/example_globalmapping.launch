@@ -1,19 +1,12 @@
 <launch>
 
-  <!-- 开启深度图与彩色图融合 -->
-  <node name="DepthtoPointcloud_node" pkg="dvs_reconstruction" type="DepthtoPointcloud_node" output="screen" launch-prefix="gnome-terminal -x" >
-    <remap from="image_rgb" to="/camera/color/image_raw"/>
-    <remap from="image_depth" to="/camera/depth/image_raw"/>
-    <remap from="camera_info" to="/camera/depth/camera_info"/>
-    <remap from="PointCloud_from_DepthImage" to="/PointCloud_from_DepthImage"/>
-  </node>
-
     <!-- 开启TSDF-based map fusion -->
-  <arg name="voxel_size" default="0.01"/>
+  <!-- <arg name="voxel_size" default="0.01"/> -->
+  <arg name="voxel_size" default="0.1"/>
   <node name="voxblox_node" pkg="voxblox_ros" type="tsdf_server" output="screen" args="--alsologtostderr" clear_params="true" launch-prefix="gnome-terminal -x">
 
       <!-- Topics -->
-      <remap from="pointcloud" to="open_quadtree_mapping/pointcloud"/>  
+      <remap from="pointcloud" to="/PointCloud_from_DepthImage"/>  
       
       <param name="tsdf_voxel_size" value="$(arg voxel_size)" />   <!-- The size of the tsdf voxels -->
       <param name="tsdf_voxels_per_side" value="16" />    <!-- TSDF voxels per side of an allocated block. Must be a power of 2 -->

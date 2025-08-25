@@ -20,7 +20,7 @@
 
 
 <param name="colorful" type="bool" value="true"/>
-<param name="PointCloud_frameid" type="string" value="world" />
+<param name="PointCloud_frameid" type="string" value="body" />
 
   <!-- 开启深度图与彩色图融合 -->
   <node name="DepthtoPointcloud_node" pkg="DepthtoPointcloud_node" type="DepthtoPointcloud_node" output="screen" launch-prefix="gnome-terminal -x" >
@@ -31,6 +31,6 @@
   </node>
 
   <!-- *********************************   rviz可视化   *********************************     -->
-  <node name="rviz_depth_to_pointcloud" pkg="rviz" type="rviz" output="log" args="-d $(find DepthtoPointcloud_node)/depth_to_pointcloud.rviz" />
+  <!-- <node name="rviz_depth_to_pointcloud" pkg="rviz" type="rviz" output="log" args="-d $(find DepthtoPointcloud_node)/depth_to_pointcloud.rviz" /> -->
 
 </launch>
